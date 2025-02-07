@@ -1,12 +1,13 @@
 package com.example.a2
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.a2.databinding.ContactListItemBinding
 
 class ContactListAdapter(private var contactItems: List<ContactItem>,
-                      private val onClick : (item: ContactItem) -> Unit
+                         private val navigateToDetail: (ContactItem) -> Unit
 ) : RecyclerView.Adapter<ContactListAdapter.ViewHolder>() {
 
 
@@ -31,9 +32,11 @@ class ContactListAdapter(private var contactItems: List<ContactItem>,
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = contactItems[position]
         holder.binding.textView.text = item.name
-        holder.binding.button2.setOnClickListener{
-            //vm.remove(item)
-            onClick(item)
+
+        // Navigate to ContactDetailFragment when button2 is clicked
+        holder.binding.button2.setOnClickListener {
+            navigateToDetail(item) // Call navigation function with the contact item
+            Log.e("CLICK", "this is a test")
         }
     }
 
