@@ -1,48 +1,32 @@
 package com.example.a2
 
-import android.graphics.Color
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.update
-import kotlin.random.Random
+import java.util.UUID
 
-data class ContactItem(val name: String, val email: String)
+data class Contact(
+    val id: String,
+    val firstName: String,
+    val lastName: String,
+    val email: String,
+    val phoneNumber: String
+)
 
-//take adaptor as a constructor param?
 class ContactViewModel : ViewModel() {
-    private val rand = Random.Default //just a normal private class member
+    private val _observableList = MutableStateFlow<List<Contact>>(emptyList())
+    val observableList: StateFlow<List<Contact>> = _observableList
 
-    //MODEL part of MVVM
-    //Simple enough here to just store it as a member of our VM, won't be the case in general
-
-    private val actualList: MutableStateFlow<List<ContactItem>> =
-        MutableStateFlow( // represents a value that changes over time
-            listOf( //each of these values is a list that can be changed
-                ContactItem("John Doe", "johndoe@gmail.com")
-            )
-        )
-
-    // the public version is read only
-    val observableList = actualList as StateFlow<List<ContactItem>>
-
-    //pick a random color
-    fun newItem(name: String, email: String) {
-        actualList.update { list ->
-            list.toMutableList() + ContactItem(
-                name,
-                email
-            )
-        }
-        //adaptor.notifyElementAdded(actualList.value.size)
-
+    fun newItem(firstName: String, lastName: String, email: String, phoneNumber: String) {
+        val newContact = Contact(UUID.randomUUID().toString(), firstName, lastName, email, phoneNumber)
+        _observableList.value = _observableList.value + newContact // Reassign with new list
     }
 
-    fun removeItem(item: ContactItem) {
+    fun removeItem(contact: Contact) {
+        _observableList.value = _observableList.value.filter { it.id != contact.id } // Create a new list
+    }
 
-        actualList.update { list ->
-            list.filter { x -> !x.equals(item) } //create a new list without that item
-        }
-
+    fun getContactById(id: String): Contact? {
+        return _observableList.value.find { it.id == id }
     }
 }

@@ -1,43 +1,37 @@
 package com.example.a2
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.a2.databinding.ContactListItemBinding
 
-class ContactListAdapter(private var contactItems: List<ContactItem>,
-                         private val navigateToDetail: (ContactItem) -> Unit
-) : RecyclerView.Adapter<ContactListAdapter.ViewHolder>() {
+class ContactListAdapter(
+    private var contactList: List<Contact>,
+    private val onContactClick: (Contact) -> Unit
+) : RecyclerView.Adapter<ContactListAdapter.ContactViewHolder>() {
 
+    // ViewHolder class
+    class ContactViewHolder(val binding: ContactListItemBinding) : RecyclerView.ViewHolder(binding.root)
 
-    fun updateList(newList: List<ContactItem>){
-        contactItems = newList
+    // Create ViewHolder
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ContactViewHolder {
+        val binding = ContactListItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return ContactViewHolder(binding)
+    }
+
+    // Bind data to ViewHolder
+    override fun onBindViewHolder(holder: ContactViewHolder, position: Int) {
+        val contact = contactList[position]
+        holder.binding.contactNameTextView.text = contact.firstName + " " + contact.lastName
+        holder.itemView.setOnClickListener { onContactClick(contact) }
+    }
+
+    // Return the number of contacts
+    override fun getItemCount() = contactList.size
+
+    // Update the contact list
+    fun updateList(newList: List<Contact>) {
+        contactList = newList
         notifyDataSetChanged()
     }
-
-    //wrapper for the a view of a single item.  Created/destroyed as needed
-    inner class ViewHolder(val binding: ContactListItemBinding):
-        RecyclerView.ViewHolder(binding.root)
-
-    //called by RV when it needs a new view to show an item in
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        //parent, false are important parameters for sizing reasons!!
-        return ViewHolder(ContactListItemBinding.inflate(LayoutInflater.from(parent.context), parent, false))
-    }
-
-    override fun getItemCount(): Int = contactItems.size
-
-    //called when filling in a view with an item from the list
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val item = contactItems[position]
-        holder.binding.textView.text = item.name
-
-        // Navigate to ContactDetailFragment when button2 is clicked
-        holder.binding.button2.setOnClickListener {
-            navigateToDetail(item) // Call navigation function with the contact item
-            Log.e("CLICK", "this is a test")
-        }
-    }
-
 }
