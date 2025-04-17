@@ -2,7 +2,14 @@
 
 ## 📱 Overview
 
-This is a straightforward Android application developed in Kotlin using Android Studio. It allows users to manage their contacts, providing functionalities to add, view, and delete contact information.
+This is a straightforward Android application developed in Kotlin using Android Studio. It allows users to manage their contacts, providing functionalities to add, view, and delete contact information.  
+
+## 🖼️ Screenshots
+
+<p float="left">
+  <img src="./assets/home.png" height="400"/>
+  <img src="./assets/details.png" height="400"/>
+</p>
 
 ## 🎯 Project Objectives
 
